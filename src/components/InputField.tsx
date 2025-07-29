@@ -21,7 +21,7 @@ const InputField: React.FC<Props> = ({ toDo, setToDo, handleAdd }) => {
       />
       <button
         type="submit" 
-        className="absolute bg-blue-500 right-2 py-1.5 px-4 rounded-full text-white transition-transform hover:scale-90 ease-out hover:bg-black/40"
+        className="absolute bg-blue-500 right-2 py-1.5 px-4 rounded-full text-white transition-transform hover:scale-90 ease-out"
       >
         Go
       </button>
