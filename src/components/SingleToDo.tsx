@@ -29,13 +29,19 @@ const SingleToDo: React.FC<Props>= ({todos, toDos, setToDos}) => {
     };
 
     const handleEdit = (id: number) => {
-        setToDos(prev => prev.map(todo => 
-            todo.id === id ? {...todo, todo: editText} : todo
-        )
-    )
-    setIsEditing(false);
+        if (editText.trim() === "") {
+            alert("Task cannot be empty!");
+            return;
+        } else {
+            setToDos(prev =>
+            prev.map(todo =>
+                todo.id === id ? { ...todo, todo: editText } : todo
+            )
+            );
+            setIsEditing(false);
+        }
     };
-
+    
   return (
     <form className="flex flex-col justify-between px-5 py-4 transition-transform duration-300 bg-yellow-500 rounded-md w-[300px] h-[120px] hover:scale-105 overflow-hidden">
         
@@ -52,6 +58,8 @@ const SingleToDo: React.FC<Props>= ({todos, toDos, setToDos}) => {
                             handleEdit(todos.id);
                         }
                     }}
+                    className="px-3 py-1 focus:outline-none"
+                    //autoFocus
                 />
             ):(
                 <span className={`font-medium break-words text-md ${
@@ -85,4 +93,4 @@ const SingleToDo: React.FC<Props>= ({todos, toDos, setToDos}) => {
   )
 }
 
-export default SingleToDo
+export default SingleToDo;
