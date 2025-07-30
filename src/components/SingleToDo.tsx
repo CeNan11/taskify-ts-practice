@@ -1,4 +1,5 @@
-import React from 'react'
+import React from 'react';
+import { useState } from 'react';
 import type {ToDo} from '../model';
 import { FaEdit } from "react-icons/fa";
 import { FaCheck } from "react-icons/fa";
@@ -8,10 +9,12 @@ type Props = {
     todos: ToDo;
     toDos: ToDo[];
     setToDos: React.Dispatch<React.SetStateAction<ToDo[]>>
-    handleDone: (e: React.FormEvent<HTMLFormElement>) => void;
 }
 
 const SingleToDo: React.FC<Props>= ({todos, toDos, setToDos}) => {
+
+    const [isEditing, setIsEditing] = useState<boolean>(false);
+    const [editText, setEditText] = useState<string>(todos.todo);
 
     const handleDone = (id: number) => {
         setToDos(prev =>
@@ -21,18 +24,41 @@ const SingleToDo: React.FC<Props>= ({todos, toDos, setToDos}) => {
         );
     };
 
+    const handleDelete = (id: number) => {
+        setToDos(prev => prev.filter(todo => todo.id !== id));
+    };
+
+    const handleEdit = (id: number) => {
+        setToDos(prev => prev.map(todo => 
+            todo.id === id ? {...todo, todo: editText} : todo
+        )
+    )
+    setIsEditing(false);
+    };
 
   return (
     <form className="flex flex-col justify-between px-5 py-4 transition-transform duration-300 bg-yellow-500 rounded-md w-[300px] h-[120px] hover:scale-105 overflow-hidden">
         
         {
-            todos.isDone ?
+            isEditing ?
+
             (
-                 <s className="font-medium break-words text-md">{todos.todo}</s>
-
+                <input
+                    value={editText}
+                    onChange={(e) => setEditText(e.target.value)}
+                    onKeyDown={(e) => {
+                        if(e.key === 'Enter'){
+                            e.preventDefault();
+                            handleEdit(todos.id);
+                        }
+                    }}
+                />
             ):(
-                <span className="font-medium break-words text-md">{todos.todo}</span>
-
+                <span className={`font-medium break-words text-md ${
+                                todos.isDone ? 'line-through' : ''
+                            }`}
+          
+                >{todos.todo}</span>
             )
         }
         <div className="flex justify-end gap-3 mr-2">
@@ -42,10 +68,16 @@ const SingleToDo: React.FC<Props>= ({todos, toDos, setToDos}) => {
                     className="transition-transform duration-300 hover:scale-125">
                 <FaCheck />
             </button>
-            <button className="transition-transform duration-300 hover:scale-125">
+            <button 
+                    type="button"
+                    onClick={() => setIsEditing(true)}
+                    className="transition-transform duration-300 hover:scale-125">
                 <FaEdit />
             </button>
-            <button className="transition-transform duration-300 hover:scale-125">
+            <button 
+                    type="button"
+                    onClick= {() => handleDelete(todos.id)}
+                    className="transition-transform duration-300 hover:scale-125">
                 <FaTrash />
             </button>
         </div>
